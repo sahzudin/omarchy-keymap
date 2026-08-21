@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "id": "io.github.sahzudin.keymap",
+  "name": "Keyboard Shortcuts",
+  "version": "1.0.0",
+  "author": "Sahzudin",
+  "license": "MIT",
+  "description": "A settings-style editor for Omarchy and Hyprland keyboard shortcuts.",
+  "kinds": [
+    "panel",
+    "bar-widget"
+  ],
+  "entryPoints": {
+    "panel": "Panel.qml",
+    "barWidget": "BarWidget.qml"
+  },
+  "barWidget": {
+    "displayName": "Keyboard Shortcuts",
+    "description": "Open the keyboard shortcut settings panel.",
+    "category": "System",
+    "allowMultiple": false,
+    "defaultSection": "right"
+  }
+}
