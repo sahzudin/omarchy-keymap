@@ -39,8 +39,8 @@ omarchy plugin add https://github.com/sahzudin/omarchy-keymap.git --yes
 ```
 
 The integration step adds marked, reversible entries to the user's Hyprland,
-Omarchy menu, and shell configuration. It does not use `sudo` or modify files
-under `/usr/share/omarchy`.
+Omarchy menu, and shell configuration. It runs entirely with user permissions
+and leaves packaged files under `/usr/share/omarchy` untouched.
 
 The panel is installed without a bar icon by default. To start with one:
 
