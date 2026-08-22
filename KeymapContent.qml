@@ -61,6 +61,15 @@ FocusScope {
       .replace(/\s+/g, " ")
   }
 
+  // Button renders its label in a Text we cannot reach, so it keeps the default
+  // AutoText format. Hyprland hands us arbitrary keysym names, and a label Qt
+  // sniffs as rich text would fetch <img> sources from the shell process. A
+  // zero-width space after each angle bracket defeats that detection while
+  // rendering identically. Text we own is pinned to PlainText instead.
+  function plainLabel(value) {
+    return String(value || "").replace(/</g, "<\u200b").replace(/&lt;/gi, "&\u200blt;")
+  }
+
   function bindingTitle(identifier) {
     for (var index = 0; index < root.bindings.length; index++) {
       if (root.bindings[index].id === identifier)
@@ -368,6 +377,7 @@ FocusScope {
       Text {
         id: headerIcon
         text: "󰌌"
+        textFormat: Text.PlainText
         color: Color.foreground
         font.family: Style.font.family
         font.pixelSize: Style.font.display
@@ -386,6 +396,7 @@ FocusScope {
 
         Text {
           text: "Keyboard Shortcuts"
+          textFormat: Text.PlainText
           color: Color.foreground
           font.family: Style.font.family
           font.pixelSize: Style.font.title
@@ -393,6 +404,7 @@ FocusScope {
         }
         Text {
           text: "Omarchy and Hyprland · changes apply immediately"
+          textFormat: Text.PlainText
           color: Qt.darker(Color.foreground, 1.4)
           font.family: Style.font.family
           font.pixelSize: Style.font.caption
@@ -490,6 +502,7 @@ FocusScope {
 
           Text {
             text: "⚠"
+            textFormat: Text.PlainText
             color: Color.urgent
             font.family: Style.font.family
             font.pixelSize: Style.font.title
@@ -497,6 +510,7 @@ FocusScope {
 
           Text {
             text: "Shortcut conflict"
+            textFormat: Text.PlainText
             color: Color.urgent
             font.family: Style.font.family
             font.pixelSize: Style.font.body
@@ -508,6 +522,7 @@ FocusScope {
           text: root.pendingConflict === null ? "" :
             ("\u201c" + root.pendingShortcut + "\u201d is already assigned to \u201c"
               + String(root.pendingConflict.title || "another action") + "\u201d.")
+          textFormat: Text.PlainText
           color: Color.foreground
           font.family: Style.font.family
           font.pixelSize: Style.font.bodySmall
@@ -519,6 +534,7 @@ FocusScope {
             ("Reassigning it to \u201c" + root.bindingTitle(root.pendingSourceId)
               + "\u201d will disable the shortcut for \u201c"
               + String(root.pendingConflict.title || "the existing action") + "\u201d.")
+          textFormat: Text.PlainText
           color: Qt.darker(Color.foreground, 1.3)
           font.family: Style.font.family
           font.pixelSize: Style.font.caption
@@ -589,6 +605,7 @@ FocusScope {
               Text {
                 width: parent.width
                 text: shortcutRow.modelData.title
+                textFormat: Text.PlainText
                 color: Color.foreground
                 font.family: Style.font.family
                 font.pixelSize: Style.font.body
@@ -599,6 +616,7 @@ FocusScope {
                 width: parent.width
                 visible: text !== ""
                 text: shortcutRow.modelData.subtitle || ""
+                textFormat: Text.PlainText
                 color: Qt.darker(Color.foreground, 1.45)
                 font.family: Style.font.family
                 font.pixelSize: Style.font.caption
@@ -617,7 +635,8 @@ FocusScope {
                   ? "Disabled"
                   : (root.recordingId === shortcutRow.modelData.id
                     ? "Press keys…"
-                    : (shortcutRow.modelData.displayShortcut || shortcutRow.modelData.shortcut))
+                    : root.plainLabel(shortcutRow.modelData.displayShortcut
+                      || shortcutRow.modelData.shortcut))
                 bordered: true
                 enabled: shortcutRow.modelData.supported && !root.busy
                 onClicked: {
@@ -656,6 +675,7 @@ FocusScope {
         anchors.rightMargin: Style.space(12)
         anchors.verticalCenter: parent.verticalCenter
         text: root.statusText
+        textFormat: Text.PlainText
         color: Qt.darker(Color.foreground, 1.35)
         font.family: Style.font.family
         font.pixelSize: Style.font.caption
